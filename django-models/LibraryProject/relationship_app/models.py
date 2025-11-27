@@ -35,7 +35,7 @@ class Librarian(models.Model):
     def __str__(self):
         return self.name
 
-# --- UserProfile for RBAC ---
+# --- UserProfile for Role-Based Access Control ---
 
 class UserProfile(models.Model):
     ROLE_CHOICES = [
@@ -50,7 +50,7 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
-# --- Signals to automatically create UserProfile ---
+# --- Signals to auto-create UserProfile ---
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
