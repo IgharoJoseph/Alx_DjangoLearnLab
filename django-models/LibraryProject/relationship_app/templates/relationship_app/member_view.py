@@ -1,6 +1,3 @@
-from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponse
-
 def is_member(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 

@@ -5,6 +5,7 @@ from .admin_view import admin_view
 from .librarian_view import librarian_view
 from .member_view import member_view
 
+
 urlpatterns = [
     path('books/', views.list_books, name='list_books'),
     path('library/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'),
