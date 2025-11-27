@@ -41,6 +41,11 @@ INSTALLED_APPS = [
     'relationship_app',
 ]
 
+LOGIN_URL = 'login'         # Redirect users to login page if @login_required
+LOGIN_REDIRECT_URL = 'list_books'
+LOGOUT_REDIRECT_URL = 'login'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
