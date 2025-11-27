@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
-from .models import Book, Library
+from .models import Library, Book  
 
 # Function-based view: list all books
 def list_books(request):
@@ -8,8 +8,8 @@ def list_books(request):
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
 
-# Class-based view: library details
+# Class-based view: show details for a specific library
 class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html'
+    model = Library  # Must explicitly use Library
+    template_name = 'relationship_app/library_detail.html'  # Must include 'relationship_app/' in path
     context_object_name = 'library'
