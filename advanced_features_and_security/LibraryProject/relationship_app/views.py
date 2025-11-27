@@ -2,14 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import permission_required, user_passes_test
-from .models import Book
-from django.views.generic import DetailView
-from .models import Library
+from .forms import BookForm
 
-class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html' 
-    
 # --- Registration view ---
 def register(request):
     if request.method == 'POST':
@@ -47,13 +41,18 @@ def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
 
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books')
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/book_form.html', {'form': form})
 
 # Add Book view
-def list_books(request):
-    books = Book.objects.all()
-    return render(request, 'relationship_app/list_books.html', {'books': books})
-
-
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
     return render(request, 'relationship_app/add_book.html')  # minimal template
