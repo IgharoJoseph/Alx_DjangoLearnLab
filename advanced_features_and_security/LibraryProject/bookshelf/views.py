@@ -1,50 +1,28 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import permission_required
+from django.shortcuts import render, redirect
 from .models import Book
+from .forms import BookForm
+from django.http import HttpResponse
 
-
-@permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
-    """Display all books. Viewers, Editors, and Admins can access this."""
+    # Using Django ORM to prevent SQL injection
     books = Book.objects.all()
-    return render(request, 'bookshelf/list_books.html', {'books': books})
+    return render(request, 'bookshelf/book_list.html', {'books': books})
 
 
-@permission_required('bookshelf.can_create', raise_exception=True)
-def create_book(request):
-    """Create a new book. Only Editors and Admins can access this."""
-    if request.method == "POST":
-        title = request.POST.get("title")
-        author = request.POST.get("author")
+def secure_book_create(request):
+    # Using Django forms for input validation and sanitization
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm()
 
-        if title and author:
-            Book.objects.create(title=title, author=author)
-            return redirect('list_books')
-
-    return render(request, 'bookshelf/create_book.html')
-
-
-@permission_required('bookshelf.can_edit', raise_exception=True)
-def edit_book(request, pk):
-    """Edit an existing book. Only Editors and Admins can access this."""
-    book = get_object_or_404(Book, pk=pk)
-
-    if request.method == "POST":
-        book.title = request.POST.get("title")
-        book.author = request.POST.get("author")
-        book.save()
-        return redirect('list_books')
-
-    return render(request, 'bookshelf/edit_book.html', {'book': book})
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 
 
-@permission_required('bookshelf.can_delete', raise_exception=True)
-def delete_book(request, pk):
-    """Delete a book. Only Admins can access this."""
-    book = get_object_or_404(Book, pk=pk)
-
-    if request.method == "POST":
-        book.delete()
-        return redirect('list_books')
-
-    return render(request, 'bookshelf/delete_book.html', {'book': book})
+def csp_protected_view(request):
+    response = HttpResponse("CSP Protected Content")
+    response['Content-Security-Policy'] = "default-src 'self'"
+    return response
