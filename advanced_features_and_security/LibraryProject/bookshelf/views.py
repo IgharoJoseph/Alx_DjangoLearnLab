@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Book
 from .forms import BookForm
 from django.http import HttpResponse
+from .forms import ExampleForm
 
 def book_list(request):
     # Using Django ORM to prevent SQL injection
